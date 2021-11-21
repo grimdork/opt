@@ -5,8 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Urethramancer/signor/log"
-	"github.com/Urethramancer/signor/stringer"
+	"github.com/grimdork/str"
 )
 
 // Args gets options and commands parsed into it.
@@ -33,7 +32,7 @@ const (
 
 // Usage printout.
 func (a *Args) Usage() {
-	var b stringer.Stringer
+	b := str.NewStringer()
 	b.WriteStrings("Usage:\n  ", a.Program)
 	// Invocation
 	c := len(a.short) + len(a.long)
@@ -73,7 +72,7 @@ func (a *Args) Usage() {
 			b.WriteStrings("\n", gn, ":\n")
 		}
 		for _, f := range flags {
-			fullFieldUsage(&b, f)
+			fullFieldUsage(b, f)
 		}
 	}
 
@@ -81,7 +80,7 @@ func (a *Args) Usage() {
 	if len(a.positionalList) > 0 {
 		b.WriteString("\nPositional arguments:\n")
 		for _, f := range a.positionalList {
-			fullFieldUsage(&b, f)
+			fullFieldUsage(b, f)
 		}
 	}
 
@@ -96,14 +95,14 @@ func (a *Args) Usage() {
 			b.WriteStrings("\n", gn, ":\n")
 		}
 		for _, f := range flags {
-			fullFieldUsage(&b, f)
+			fullFieldUsage(b, f)
 		}
 	}
 
-	log.Default.Msg(b.String())
+	println(b.String())
 }
 
-func fullFieldUsage(b *stringer.Stringer, f *Flag) {
+func fullFieldUsage(b *str.Stringer, f *Flag) {
 	vars, help := f.UsageString()
 	b.WriteStrings(vars, "\t\t")
 	if len(vars) < 16 {

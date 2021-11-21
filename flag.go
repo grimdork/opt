@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Urethramancer/signor/stringer"
+	"github.com/grimdork/str"
 )
 
 // Flag or command option.
@@ -32,7 +32,8 @@ type Flag struct {
 }
 
 func (f *Flag) UsageString() (string, string) {
-	var vars, help stringer.Stringer
+	vars := str.NewStringer()
+	help := str.NewStringer()
 	vars.WriteString("  ")
 	if f.Short != "" {
 		vars.WriteStrings("-", f.Short)
@@ -180,7 +181,7 @@ func val(s string, kind reflect.Kind) reflect.Value {
 func (f *Flag) parseCommand(args []string, parent string) {
 	f.Args = newArgs(args)
 	iface := f.field.Addr()
-	p := stringer.New()
+	p := str.NewStringer()
 	p.WriteStrings(parent, " ", f.CommandName)
 	f.Args.Parse(iface.Interface(), args, p.String())
 	f.command = iface.MethodByName("Run")
