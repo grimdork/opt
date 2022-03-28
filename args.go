@@ -157,14 +157,14 @@ func newArgs(in []string) *Args {
 }
 
 // Parse an option structure and slice of arguments.
-func (a *Args) Parse(data interface{}, in []string, parent string) {
+func (a *Args) Parse(data any, in []string, parent string) {
 	a.Program = parent
 	a.parseOpts(data)
 	a.parseArgs(in)
 }
 
 //Parse available options.
-func (a *Args) parseOpts(data interface{}) {
+func (a *Args) parseOpts(data any) {
 	a.st = reflect.ValueOf(data).Elem()
 	t := a.st.Type()
 	for i := 0; i < a.st.NumField(); i++ {
