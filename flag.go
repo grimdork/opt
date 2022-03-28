@@ -31,6 +31,7 @@ type Flag struct {
 	Required    bool
 }
 
+// UsageString returns the help text.
 func (f *Flag) UsageString() (string, string) {
 	vars := str.NewStringer()
 	help := str.NewStringer()

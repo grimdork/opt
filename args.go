@@ -30,6 +30,27 @@ const (
 	noGroup = "none"
 )
 
+// HandleCommands is a shortcut for handling commands and outputting usage test, returning any serious errors.
+func HandleCommands(o any) error {
+	a := Parse(&o)
+	if o.(DefaultHelp).Help {
+		a.Usage()
+		return nil
+	}
+
+	err := a.RunCommand(false)
+	if err != nil {
+		if err == ErrNoCommand {
+			a.Usage()
+			return nil
+		}
+
+		return err
+	}
+
+	return nil
+}
+
 // Usage printout.
 func (a *Args) Usage() {
 	b := str.NewStringer()
@@ -115,7 +136,7 @@ func fullFieldUsage(b *str.Stringer, f *Flag) {
 }
 
 // Parse the command line for arguments and tool commands.
-func Parse(data interface{}) *Args {
+func Parse(data any) *Args {
 	args := newArgs(os.Args)
 	args.Parse(data, os.Args[1:], os.Args[0])
 	return args
@@ -373,9 +394,9 @@ func (a *Args) parseArg(args []string, f *Flag) []string {
 		}
 		if len(args) < 2 {
 			return nil
-		} else {
-			return args[1:]
 		}
+
+		return args[1:]
 	}
 
 	if f.field.Kind() == reflect.Bool {
