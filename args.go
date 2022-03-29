@@ -31,9 +31,10 @@ const (
 )
 
 // HandleCommands is a shortcut for handling commands and outputting usage test, returning any serious errors.
-func HandleCommands(o any) error {
-	a := Parse(&o)
-	if o.(DefaultHelp).Help {
+func HandleCommands(options interface{}) error {
+	a := Parse(options)
+	v := reflect.ValueOf(options).Elem().FieldByName("Help")
+	if !v.IsZero() && v.Bool() {
 		a.Usage()
 		return nil
 	}
@@ -42,7 +43,7 @@ func HandleCommands(o any) error {
 	if err != nil {
 		if err == ErrNoCommand {
 			a.Usage()
-			return nil
+			return err
 		}
 
 		return err
